@@ -3,6 +3,8 @@ import socket
 import json
 from threading import Thread
 
+cheats = False
+
 # ---ПУГАМЕ НАЛАШТУВАННЯ ---
 WIDTH, HEIGHT = 800, 600
 init()
@@ -14,7 +16,7 @@ def connect_to_server():
     while True:
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect(('localhost', 8080)) # ---- Підключення до сервера
+            client.connect(('26.123.126.212', 8080)) # ---- Підключення до сервера
             buffer = ""
             game_state = {}
             my_id = int(client.recv(24).decode())
@@ -51,6 +53,7 @@ you_winner = None
 my_id, game_state, buffer, client = connect_to_server()
 Thread(target=receive, daemon=True).start()
 while True:
+    print(game_over)
     for e in event.get():
         if e.type == QUIT:
             exit()
@@ -92,6 +95,15 @@ while True:
         draw.rect(screen, (0, 255, 0), (20, game_state['paddles']['0'], 20, 100))
         draw.rect(screen, (255, 0, 255), (WIDTH - 40, game_state['paddles']['1'], 20, 100))
         draw.circle(screen, (255, 255, 255), (game_state['ball']['x'], game_state['ball']['y']), 10)
+
+        if cheats:
+            if game_state['paddles'][str(my_id)]+70 < game_state['ball']['y']:
+                client.send(b"DOWN")
+            elif game_state['paddles'][str(my_id)]+30 > game_state['ball']['y']:
+                client.send(b"UP")
+
+
+
         score_text = font_main.render(f"{game_state['scores'][0]} : {game_state['scores'][1]}", True, (255, 255, 255))
         screen.blit(score_text, (WIDTH // 2 -25, 20))
 
@@ -115,3 +127,5 @@ while True:
         client.send(b"UP")
     elif keys[K_s]:
         client.send(b"DOWN")
+    if keys[K_r]:
+        client.send(b"R")
