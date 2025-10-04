@@ -4,7 +4,7 @@ import socket
 import json
 from threading import Thread
 
-cheats = 1
+cheats = 0
 
 # ---ПУГАМЕ НАЛАШТУВАННЯ ---
 WIDTH, HEIGHT = 800, 600
@@ -62,7 +62,7 @@ while True:
     keys = key.get_pressed()
     if keys[K_r]:
         client.close()
-        sleep(1)
+        sleep(0.5)
         game_over = False
         winner = None
         you_winner = None
@@ -104,8 +104,12 @@ while True:
 
     if game_state:
         screen.fill((30, 30, 30))
-        draw.rect(screen, (0, 255, 0), (20, game_state['paddles']['0'], 20, 100))
-        draw.rect(screen, (255, 0, 255), (WIDTH - 40, game_state['paddles']['1'], 20, 100))
+        if str(my_id) == '0':
+            draw.rect(screen, (0, 255, 0), (20, game_state['paddles']['0'], 20, 100))
+            draw.rect(screen, (255, 0, 255), (WIDTH - 40, game_state['paddles']['1'], 20, 100))
+        else:
+            draw.rect(screen, (255, 0, 255), (20, game_state['paddles']['0'], 20, 100))
+            draw.rect(screen, (0, 255, 0), (WIDTH - 40, game_state['paddles']['1'], 20, 100))
         draw.circle(screen, (255, 255, 255), (game_state['ball']['x'], game_state['ball']['y']), 10)
 
         if cheats:

@@ -136,7 +136,7 @@ class GameServer:
                 time.sleep(0.1)
 
             print(f"Гравець {self.winner} переміг!")
-            time.sleep(2)
+            time.sleep(1)
 
             # Закриваємо старі з'єднання
             for pid in [0, 1]:
