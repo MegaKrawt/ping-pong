@@ -1,9 +1,10 @@
+from time import sleep
 from pygame import *
 import socket
 import json
 from threading import Thread
 
-cheats = False
+cheats = 1
 
 # ---ПУГАМЕ НАЛАШТУВАННЯ ---
 WIDTH, HEIGHT = 800, 600
@@ -14,6 +15,7 @@ display.set_caption("Пінг-Понг")
 # ---СЕРВЕР ---
 def connect_to_server():
     while True:
+        print(1)
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect(('26.123.126.212', 8080)) # ---- Підключення до сервера
@@ -53,10 +55,19 @@ you_winner = None
 my_id, game_state, buffer, client = connect_to_server()
 Thread(target=receive, daemon=True).start()
 while True:
-    print(game_over)
     for e in event.get():
         if e.type == QUIT:
             exit()
+
+    keys = key.get_pressed()
+    if keys[K_r]:
+        client.close()
+        sleep(1)
+        game_over = False
+        winner = None
+        you_winner = None
+        my_id, game_state, buffer, client = connect_to_server()
+        Thread(target=receive, daemon=True).start()
 
     if "countdown" in game_state and game_state["countdown"] > 0:
         screen.fill((0, 0, 0))
@@ -67,6 +78,7 @@ while True:
 
     if "winner" in game_state and game_state["winner"] is not None:
         screen.fill((20, 20, 20))
+        game_over=True
 
         if you_winner is None:  # Встановлюємо тільки один раз
             if game_state["winner"] == my_id:
@@ -127,5 +139,3 @@ while True:
         client.send(b"UP")
     elif keys[K_s]:
         client.send(b"DOWN")
-    if keys[K_r]:
-        client.send(b"R")

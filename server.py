@@ -45,8 +45,6 @@ class GameServer:
                         self.paddles[pid] = max(60, self.paddles[pid] - PADDLE_SPEED)
                     elif data == "DOWN":
                         self.paddles[pid] = min(HEIGHT - 100, self.paddles[pid] + PADDLE_SPEED)
-                    if data == "R":
-                        self.reset_game_state()
 
         except:
             with self.lock:
@@ -99,10 +97,10 @@ class GameServer:
                     self.scores[0] += 1
                     self.reset_ball()
 
-                if self.scores[0] >= 10:
+                if self.scores[0] >= 2:
                     self.game_over = True
                     self.winner = 0
-                elif self.scores[1] >= 10:
+                elif self.scores[1] >= 2:
                     self.game_over = True
                     self.winner = 1
 
@@ -138,7 +136,7 @@ class GameServer:
                 time.sleep(0.1)
 
             print(f"Гравець {self.winner} переміг!")
-            time.sleep(5)
+            time.sleep(2)
 
             # Закриваємо старі з'єднання
             for pid in [0, 1]:
